@@ -1,7 +1,7 @@
 // This function is called within the first transaction. It inserts some initial values into the "accounts" table.
 async function createPoster(client, poster, callback) {
     const request =
-        "INSERT INTO poster (latitude, longitude, poster_type, motive, target_groups, environment, other) VALUES ($1, $2, $3, $4, $5, $6, $7)";
+        "INSERT INTO poster (location, poster_type, motive, target_groups, environment, other) VALUES (CAST(ST_Makepoint($1,$2) as GEOGRAPHY), $3, $4, $5, $6, $7)";
     await client.query(request,
         [
             poster.latitude,
@@ -17,7 +17,7 @@ async function createPoster(client, poster, callback) {
 
 async function updatePoster(client, poster, callback) {
     const request =
-        "UPDATE poster SET (latitude, longitude, poster_type, motive, target_groups, environment, other) = ($1, $2, $3, $4, $5, $6, $7) WHERE id=$8";
+        "UPDATE poster SET (location, poster_type, motive, target_groups, environment, other) = (CAST(ST_Makepoint($1,$2) as GEOGRAPHY), $3, $4, $5, $6, $7) WHERE id=$8";
     await client.query(request,
         [
             poster.latitude,
@@ -32,4 +32,21 @@ async function updatePoster(client, poster, callback) {
         callback);
 }
 
-module.exports = {createPoster, updatePoster}
+async function getPosterInMeterRange(client, latitude, longitude, distance, hanging, callback) {
+    console.log(latitude);
+    console.log(longitude);
+    console.log(distance);
+    console.log(hanging);
+    const request = "SELECT id, ST_Y(cast(poster.location as GEOMETRY)) as latitude, ST_X(cast(poster.location as GEOMETRY)) as longitude, hanging, poster_type, motive, target_groups, environment, other FROM poster WHERE ST_DWITHIN(poster.location, CAST(ST_Makepoint($1,$2) as GEOGRAPHY), $3) AND poster.hanging=$4;"
+    await client.query(request,
+        [
+            latitude,
+            longitude,
+            distance,
+            hanging
+        ],
+        callback,
+    );
+}
+
+module.exports = {createPoster, updatePoster, getPosterInMeterRange}

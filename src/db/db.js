@@ -54,13 +54,15 @@ async function initTable(client, callback) {
     const createOtherTable =
         "CREATE TABLE IF NOT EXISTS poster_other (id UUID DEFAULT gen_random_uuid() PRIMARY KEY, description STRING)";
     const createPosterTable =
-        "CREATE TABLE IF NOT EXISTS poster (id UUID DEFAULT gen_random_uuid() PRIMARY KEY, hanging BOOL DEFAULT true, latitude FLOAT NOT NULL, longitude FLOAT NOT NULL, poster_type UUID[], motive UUID[], target_groups UUID[], environment UUID[], other UUID[])";
+        "CREATE TABLE IF NOT EXISTS poster (id UUID DEFAULT gen_random_uuid() PRIMARY KEY, hanging BOOL DEFAULT true, location GEOGRAPHY, poster_type UUID[], motive UUID[], target_groups UUID[], environment UUID[], other UUID[])";
+    const createPosterIndex = "CREATE INDEX poster_location ON poster using GIST(location);"
     await client.query(createTypeTable, callback);
     await client.query(createMotiveTable, callback);
     await client.query(createTargetGroupsTable, callback);
     await client.query(createEnvironmentTable, callback);
     await client.query(createOtherTable, callback);
     await client.query(createPosterTable, callback);
+    await client.query(createPosterIndex, callback);
     console.log("After Init Tables")
 }
 

@@ -37,5 +37,20 @@ router.post('/update', async (req, res) => {
     }
 });
 
+router.get('/distance', async (req, res) => {
+    try {
+        const {latitude, longitude, distance, hanging} = req.headers;
+        await poster_db.getPosterInMeterRange(await db.getConnection(), latitude, longitude, distance, hanging, (err, result) => {
+            if (err) {
+                return res.status(401).send({error: err.message});
+            } else {
+                return res.status(201).send(result.rows);
+            }
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(400).send(error);
+    }
+});
 
 module.exports = router;
