@@ -57,7 +57,7 @@ async function initTable(client, callback) {
         "CREATE TABLE IF NOT EXISTS poster_other (id UUID DEFAULT gen_random_uuid() PRIMARY KEY, description STRING, active BOOL DEFAULT true)";
     const createPosterTable =
         "CREATE TABLE IF NOT EXISTS poster (id UUID DEFAULT gen_random_uuid() PRIMARY KEY, hanging INT DEFAULT 0, " +
-        "location GEOGRAPHY, poster_campaign UUID[], poster_type UUID[], motive UUID[], target_groups UUID[], " +
+        "location GEOGRAPHY, campaign UUID[], poster_type UUID[], motive UUID[], target_groups UUID[], " +
         "environment UUID[], other UUID[], last_update TIMESTAMP DEFAULT now(), account STRING)";
 
     const createPosterIndex = "CREATE INDEX poster_location ON poster using GIST(location);"

@@ -5,8 +5,8 @@ const poster_db = require('../src/db/poster');
 
 router.post('/create', async (req, res) => {
     try {
-        const {latitude, longitude, poster_type, motive, target_groups, environment, other} = req.body;
-        const poster = {latitude, longitude, poster_type, motive, target_groups, environment, other};
+        const {latitude, longitude, campaign, poster_type, motive, target_groups, environment, other} = req.body;
+        const poster = {latitude, longitude, campaign, poster_type, motive, target_groups, environment, other};
         await poster_db.createPoster(await db.getConnection(), poster, (err, result) => {
             if (err) {
                 return res.status(401).send({error: err.message});
@@ -22,8 +22,8 @@ router.post('/create', async (req, res) => {
 
 router.post('/update', async (req, res) => {
     try {
-        const {id, hanging, latitude, longitude, poster_type, motive, target_groups, environment, other} = req.body;
-        const poster = {id, hanging, latitude, longitude, poster_type, motive, target_groups, environment, other};
+        const {id, hanging, latitude, longitude, campaign, poster_type, motive, target_groups, environment, other} = req.body;
+        const poster = {id, hanging, latitude, longitude, campaign, poster_type, motive, target_groups, environment, other};
         await poster_db.updatePoster(await db.getConnection(), poster, (err, result) => {
             if (err) {
                 return res.status(401).send({error: err.message});
