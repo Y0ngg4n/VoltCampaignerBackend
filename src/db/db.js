@@ -43,19 +43,25 @@ async function retryTxn(n, max, client, operation, callback) {
 // This function is called within the first transaction. It inserts some initial values into the "accounts" table.
 async function initTable(client, callback) {
     console.log("Creating Tables ...")
+    const createCampaignTable =
+        "CREATE TABLE IF NOT EXISTS poster_campaign (id UUID DEFAULT gen_random_uuid() PRIMARY KEY, description STRING, active BOOL DEFAULT true)";
     const createTypeTable =
-        "CREATE TABLE IF NOT EXISTS poster_type (id UUID DEFAULT gen_random_uuid() PRIMARY KEY, description STRING)";
+        "CREATE TABLE IF NOT EXISTS poster_type (id UUID DEFAULT gen_random_uuid() PRIMARY KEY, description STRING, active BOOL DEFAULT true)";
     const createMotiveTable =
-        "CREATE TABLE IF NOT EXISTS poster_motive (id UUID DEFAULT gen_random_uuid() PRIMARY KEY, description STRING)";
+        "CREATE TABLE IF NOT EXISTS poster_motive (id UUID DEFAULT gen_random_uuid() PRIMARY KEY, description STRING, active BOOL DEFAULT true)";
     const createTargetGroupsTable =
-        "CREATE TABLE IF NOT EXISTS poster_target_groups (id UUID DEFAULT gen_random_uuid() PRIMARY KEY, description STRING)";
+        "CREATE TABLE IF NOT EXISTS poster_target_groups (id UUID DEFAULT gen_random_uuid() PRIMARY KEY, description STRING, active BOOL DEFAULT true)";
     const createEnvironmentTable =
-        "CREATE TABLE IF NOT EXISTS poster_environment (id UUID DEFAULT gen_random_uuid() PRIMARY KEY, description STRING)";
+        "CREATE TABLE IF NOT EXISTS poster_environment (id UUID DEFAULT gen_random_uuid() PRIMARY KEY, description STRING, active BOOL DEFAULT true)";
     const createOtherTable =
-        "CREATE TABLE IF NOT EXISTS poster_other (id UUID DEFAULT gen_random_uuid() PRIMARY KEY, description STRING)";
+        "CREATE TABLE IF NOT EXISTS poster_other (id UUID DEFAULT gen_random_uuid() PRIMARY KEY, description STRING, active BOOL DEFAULT true)";
     const createPosterTable =
-        "CREATE TABLE IF NOT EXISTS poster (id UUID DEFAULT gen_random_uuid() PRIMARY KEY, hanging INT DEFAULT 0, location GEOGRAPHY, poster_type UUID[], motive UUID[], target_groups UUID[], environment UUID[], other UUID[], last_update TIMESTAMP DEFAULT now())";
+        "CREATE TABLE IF NOT EXISTS poster (id UUID DEFAULT gen_random_uuid() PRIMARY KEY, hanging INT DEFAULT 0, " +
+        "location GEOGRAPHY, poster_campaign UUID[], poster_type UUID[], motive UUID[], target_groups UUID[], " +
+        "environment UUID[], other UUID[], last_update TIMESTAMP DEFAULT now(), account STRING)";
+
     const createPosterIndex = "CREATE INDEX poster_location ON poster using GIST(location);"
+    await client.query(createCampaignTable, callback);
     await client.query(createTypeTable, callback);
     await client.query(createMotiveTable, callback);
     await client.query(createTargetGroupsTable, callback);

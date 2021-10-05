@@ -21,6 +21,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/poster', require('./routes/poster'));
+app.use('/poster-tags', require('./routes/poster_tags'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
