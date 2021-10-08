@@ -22,7 +22,7 @@ async function updatePoster(client, poster, callback) {
     const request =
         "UPDATE poster SET (hanging, location, campaign, poster_type, motive, target_groups, environment, other, last_update) " +
         "= ($1, CAST(ST_Makepoint($2,$3) as GEOGRAPHY), $4, $5, $6, $7, $8, $9, now()) " +
-        "WHERE id=$9 RETURNING id, ST_Y(cast(poster.location as GEOMETRY)) as latitude, " +
+        "WHERE id=$10 RETURNING id, ST_Y(cast(poster.location as GEOMETRY)) as latitude, " +
         "ST_X(cast(poster.location as GEOMETRY)) as longitude, hanging, campaign, poster_type, " +
         "motive, target_groups, environment, other, last_update, account";
     await client.query(request,
@@ -47,8 +47,8 @@ async function getPosterInMeterRange(client, latitude, longitude, distance, hang
         "WHERE ST_DWITHIN(poster.location, CAST(ST_Makepoint($1,$2) as GEOGRAPHY), $3) AND poster.hanging=$4 AND last_update > $5;"
     await client.query(request,
         [
-            latitude,
             longitude,
+            latitude,
             distance,
             hanging,
             last_update

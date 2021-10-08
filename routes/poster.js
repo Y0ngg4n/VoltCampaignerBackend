@@ -2,8 +2,9 @@ const express = require('express');
 const router = express.Router();
 const db = require('../src/db/db')
 const poster_db = require('../src/db/poster');
+const auth = require('../middleware/auth')
 
-router.post('/create', async (req, res) => {
+router.post('/create', auth, async (req, res) => {
     try {
         const {latitude, longitude, campaign, poster_type, motive, target_groups, environment, other} = req.body;
         const poster = {latitude, longitude, campaign, poster_type, motive, target_groups, environment, other};
@@ -20,7 +21,7 @@ router.post('/create', async (req, res) => {
     }
 });
 
-router.post('/update', async (req, res) => {
+router.post('/update', auth, async (req, res) => {
     try {
         const {id, hanging, latitude, longitude, campaign, poster_type, motive, target_groups, environment, other} = req.body;
         const poster = {id, hanging, latitude, longitude, campaign, poster_type, motive, target_groups, environment, other};
@@ -37,7 +38,7 @@ router.post('/update', async (req, res) => {
     }
 });
 
-router.get('/distance', async (req, res) => {
+router.get('/distance', auth, async (req, res) => {
     try {
         const {latitude, longitude, distance, hanging, last_update} = req.headers;
         await poster_db.getPosterInMeterRange(await db.getConnection(), latitude, longitude, distance, hanging, last_update, (err, result) => {
@@ -53,7 +54,7 @@ router.get('/distance', async (req, res) => {
     }
 });
 
-router.get('/all', async (req, res) => {
+router.get('/all', auth, async (req, res) => {
     try {
         const {hanging} = req.headers;
         await poster_db.getAll(await db.getConnection(), hanging, (err, result) => {

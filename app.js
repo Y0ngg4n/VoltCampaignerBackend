@@ -8,6 +8,11 @@ var indexRouter = require('./routes/index');
 
 var app = express();
 var db = require('./src/db/db')
+const dotenv = require('dotenv');
+
+// get config vars
+dotenv.config();
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -22,6 +27,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/poster', require('./routes/poster'));
 app.use('/poster-tags', require('./routes/poster_tags'));
+app.use('/flyer', require('./routes/flyer'));
+app.use('/', require('./routes/auth'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -43,8 +50,8 @@ var maxRetryCount = 15;
 
 async function connect(){
     const client = await db.getConnection().catch((err) => console.log(err.stack))
-    await db.retryTxn(0, maxRetryCount, client, db.initTable, () => {
-        console.log("Created Table")
+    await db.retryTxn(0, maxRetryCount, client, db.initTable, (response) => {
+        console.log("Created Table: " + response)
     })
     console.log("After initTable");
     return client;

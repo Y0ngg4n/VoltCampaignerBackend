@@ -43,6 +43,7 @@ async function retryTxn(n, max, client, operation, callback) {
 // This function is called within the first transaction. It inserts some initial values into the "accounts" table.
 async function initTable(client, callback) {
     console.log("Creating Tables ...")
+    // Poster
     const createCampaignTable =
         "CREATE TABLE IF NOT EXISTS poster_campaign (id UUID DEFAULT gen_random_uuid() PRIMARY KEY, description STRING, active BOOL DEFAULT true)";
     const createTypeTable =
@@ -57,10 +58,10 @@ async function initTable(client, callback) {
         "CREATE TABLE IF NOT EXISTS poster_other (id UUID DEFAULT gen_random_uuid() PRIMARY KEY, description STRING, active BOOL DEFAULT true)";
     const createPosterTable =
         "CREATE TABLE IF NOT EXISTS poster (id UUID DEFAULT gen_random_uuid() PRIMARY KEY, hanging INT DEFAULT 0, " +
-        "location GEOGRAPHY, campaign UUID[], poster_type UUID[], motive UUID[], target_groups UUID[], " +
-        "environment UUID[], other UUID[], last_update TIMESTAMP DEFAULT now(), account STRING)";
+        "location GEOGRAPHY, campaign UUID[] DEFAULT ARRAY[], poster_type UUID[] DEFAULT ARRAY[], motive UUID[] DEFAULT ARRAY[], target_groups UUID[] DEFAULT ARRAY[], " +
+        "environment UUID[] DEFAULT ARRAY[], other UUID[] DEFAULT ARRAY[], last_update TIMESTAMP DEFAULT now(), account STRING);";
 
-    const createPosterIndex = "CREATE INDEX poster_location ON poster using GIST(location);"
+    const createPosterIndex = "CREATE INDEX IF NOT EXISTS poster_location ON poster using GIST(location);"
     await client.query(createCampaignTable, callback);
     await client.query(createTypeTable, callback);
     await client.query(createMotiveTable, callback);
@@ -69,6 +70,13 @@ async function initTable(client, callback) {
     await client.query(createOtherTable, callback);
     await client.query(createPosterTable, callback);
     await client.query(createPosterIndex, callback);
+
+    const createFlyerRouteTable =
+        "CREATE TABLE IF NOT EXISTS flyer_route (id UUID DEFAULT gen_random_uuid() PRIMARY KEY, points GEOGRAPHY, " +
+        "template BOOL DEFAULT false, last_update TIMESTAMP DEFAULT now(), account STRING);";
+    const createFlyerRouteIndex = "CREATE INDEX IF NOT EXISTS flyer_route_points ON flyer_route using GIST(points);"
+    await client.query(createFlyerRouteTable, callback);
+    await client.query(createFlyerRouteIndex, callback);
     console.log("After Init Tables")
 }
 

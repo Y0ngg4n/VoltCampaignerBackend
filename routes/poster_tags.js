@@ -2,12 +2,13 @@ const express = require('express');
 const router = express.Router();
 const poster_tags_db = require("../src/db/poster_tags");
 const db = require("../src/db/db");
+const auth = require('../middleware/auth')
 
-router.get('/:posterRoute', async (req, res) => {
+router.get('/:posterRoute', auth, async (req, res) => {
     try {
         let tableName
         console.log(req.params.posterRoute);
-        switch (req.params.posterRoute){
+        switch (req.params.posterRoute) {
             case 'campaign':
                 tableName = "poster_campaign";
                 break;
@@ -26,7 +27,7 @@ router.get('/:posterRoute', async (req, res) => {
             case 'other':
                 tableName = 'poster_other';
         }
-        if(!tableName){
+        if (!tableName) {
             return res.status(401).send({error: "Not a valid route"});
         }
         await poster_tags_db.getTags(await db.getConnection(), tableName, (err, result) => {
