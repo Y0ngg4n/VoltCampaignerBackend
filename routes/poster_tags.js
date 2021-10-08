@@ -6,8 +6,7 @@ const auth = require('../middleware/auth')
 
 router.get('/:posterRoute', auth, async (req, res) => {
     try {
-        let tableName
-        console.log(req.params.posterRoute);
+        let tableName;
         switch (req.params.posterRoute) {
             case 'campaign':
                 tableName = "poster_campaign";
