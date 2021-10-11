@@ -1,7 +1,7 @@
 async function createFlyerRoute(client, id, polyline, callback) {
-    values = ""
+    let values = ""
     for (let i = 0; i < polyline.length; i++) {
-        point = polyline[i];
+        let point = polyline[i];
         if(isNaN(point.latitude) || isNaN(point.latitude)) {
             callback(new Error("Not a valid number"));
             return;
