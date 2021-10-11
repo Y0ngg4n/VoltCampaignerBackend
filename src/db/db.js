@@ -77,6 +77,12 @@ async function initTable(client, callback) {
     const createFlyerRouteIndex = "CREATE INDEX IF NOT EXISTS flyer_route_points ON flyer_route using GIST(points);"
     await client.query(createFlyerRouteTable, callback);
     await client.query(createFlyerRouteIndex, callback);
+
+    const createAreaTable =
+        "CREATE TABLE IF NOT EXISTS area (id UUID DEFAULT gen_random_uuid() PRIMARY KEY, name STRING, points GEOGRAPHY, max_poster INT, last_update TIMESTAMP DEFAULT now());";
+    const createAreaIndex = "CREATE INDEX IF NOT EXISTS area_points ON area using GIST(points);"
+    await client.query(createAreaTable, callback);
+    await client.query(createAreaIndex, callback);
     console.log("After Init Tables")
 }
 

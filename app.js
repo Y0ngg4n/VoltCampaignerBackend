@@ -28,6 +28,7 @@ app.use('/poster', require('./routes/poster'));
 app.use('/poster-tags', require('./routes/poster_tags'));
 app.use('/flyer', require('./routes/flyer'));
 app.use('/', require('./routes/auth'));
+app.use('/area', require('./routes/area'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
