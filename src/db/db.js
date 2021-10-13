@@ -1,11 +1,17 @@
 const {Pool} = require("pg");
-const {v4: uuidv4} = require("uuid");
+const fs = require('fs')
 
 var config = {
-    user: 'volt_campaigner',
-    host: 'localhost',
-    database: 'volt_campaigner',
-    port: 26257
+    user: process.env.DB_USERNAME,
+    host: process.env.DB_HOST,
+    database: process.env.DB_DATABASE,
+    port: process.env.DB_PORT,
+    ssl: {
+        rejectUnauthorized: false,
+        ca: fs.readFileSync('./certs/ca.crt').toString(),
+        key: fs.readFileSync('./certs/node.key').toString(),
+        cert: fs.readFileSync('./certs/node.crt').toString(),
+    }
 };
 
 const pool = new Pool(config);
