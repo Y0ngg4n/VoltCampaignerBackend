@@ -13,6 +13,14 @@ const dotenv = require('dotenv');
 // get config vars
 dotenv.config();
 
+// Allow CORS
+const cors = require('cors');
+app.use(cors());
+
+// Add Helmet
+const helmet = require('helmet');
+app.use(helmet());
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');

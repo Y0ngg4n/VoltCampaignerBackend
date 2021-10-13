@@ -36,5 +36,21 @@ router.get('/route/distance', auth, async (req, res) => {
     }
 });
 
+router.get('/route/all', auth, async (req, res) => {
+    try {
+        await flyer_db.getAllRoutes(await db.getConnection(),(err, result) => {
+            if (err) {
+                return res.status(401).send({error: err.message});
+            } else {
+                return res.status(200).send(result.rows);
+            }
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(400).send(error);
+    }
+});
+
+
 
 module.exports = router;

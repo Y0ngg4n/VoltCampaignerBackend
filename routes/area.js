@@ -37,6 +37,22 @@ router.get('/distance', auth, async (req, res) => {
     }
 });
 
+router.get('/all', auth, async (req, res) => {
+    try {
+        const {} = req.headers;
+        await area_db.getAreasAll(await db.getConnection(), (err, result) => {
+            if (err) {
+                return res.status(401).send({error: err.message});
+            } else {
+                return res.status(200).send(result.rows);
+            }
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(400).send(error);
+    }
+});
+
 router.get('/contains', auth, async (req, res) => {
     try {
         const {latitude, longitude, last_update} = req.headers;
@@ -45,6 +61,36 @@ router.get('/contains', auth, async (req, res) => {
                 return res.status(401).send({error: err.message});
             } else {
                 return res.status(200).send(result.rows);
+            }
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(400).send(error);
+    }
+});
+
+router.get('/contains-limits', auth, async (req, res) => {
+    try {
+        const {latitude, longitude, last_update} = req.headers;
+        await area_db.getAreaContains(await db.getConnection(), latitude, longitude, last_update, async (err, result) => {
+            if (err) {
+                return res.status(401).send({error: err.message});
+            } else {
+                let areas = []
+                for (let i = 0; i < result.rows.length; i++) {
+                    await area_db.getAreaContainsLimits(await db.getConnection(), result.rows[i], last_update, (err2, result2) => {
+                        let merged = {
+                            hanging: result2.rows.length,
+                            id: result.rows[i].id,
+                            name: result.rows[i].name,
+                            max_poster: result.rows[i].max_poster
+                        };
+                        areas.push(merged);
+                        if (i === result.rows.length - 1) {
+                            return res.status(200).send(areas);
+                        }
+                    })
+                }
             }
         })
     } catch (error) {
