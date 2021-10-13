@@ -5,13 +5,13 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 
 const indexRouter = require('./routes/index');
+const dotenv = require('dotenv');
+// get config vars
+dotenv.config();
 
 const app = express();
 const db = require('./src/db/db')
-const dotenv = require('dotenv');
 
-// get config vars
-dotenv.config();
 
 // Allow CORS
 const cors = require('cors');
