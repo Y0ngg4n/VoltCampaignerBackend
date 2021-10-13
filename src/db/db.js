@@ -6,11 +6,12 @@ var config = {
     host: process.env.DB_HOST,
     database: process.env.DB_DATABASE,
     port: process.env.DB_PORT,
+    password: process.env.DB_PASSWORD,
     ssl: {
         rejectUnauthorized: false,
-        ca: fs.readFileSync('./certs/ca.crt').toString(),
-        key: fs.readFileSync('./certs/node.key').toString(),
-        cert: fs.readFileSync('./certs/node.crt').toString(),
+        ca: fs.readFileSync('/run/secrets/ca.crt').toString(),
+        key: fs.readFileSync('/run/secrets/node.key').toString(),
+        cert: fs.readFileSync('/run/secrets/node.crt').toString(),
     }
 };
 
