@@ -30,6 +30,15 @@ async function getAreasRange(client, latitude, longitude, distance, last_update,
     );
 }
 
+async function getAreasAll(client, callback) {
+    const request = "SELECT id, st_asgeojson(CAST(points as GEOMETRY)) as points, name, last_update, max_poster FROM area;"
+    await client.query(request,
+        [
+        ],
+        callback,
+    );
+}
+
 async function getAreaContains(client, latitude, longitude, last_update, callback) {
     if (isNaN(latitude) || isNaN(latitude)) {
         callback(new Error("Not a valid number"));
@@ -37,6 +46,16 @@ async function getAreaContains(client, latitude, longitude, last_update, callbac
     }
     let point = "POINT(" + longitude + " " + latitude + ")"
     const request = "SELECT id, st_asgeojson(CAST(points as GEOMETRY)) as points, name, last_update, max_poster FROM area WHERE ST_Contains(cast(area.points as geometry), ST_Transform(ST_GeomFromText('" + point + "', 4326), 4326)) AND last_update > $1"
+    await client.query(request,
+        [
+            last_update
+        ],
+        callback,
+    );
+}
+
+async function getAreaContainsLimits(client, area, last_update, callback) {
+    const request = "SELECT * FROM poster WHERE ST_Contains(st_geomfromgeojson('"+ area.points + "'), cast(poster.location as geometry)) AND last_update > $1 AND HANGING = 0"
     await client.query(request,
         [
             last_update
@@ -55,4 +74,4 @@ async function deleteArea(client, id, callback) {
     );
 }
 
-module.exports = {createArea, getAreasRange, getAreaContains, deleteArea}
+module.exports = {createArea, getAreasRange, getAreaContains, getAreaContainsLimits, getAreasAll, deleteArea}

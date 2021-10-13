@@ -30,4 +30,12 @@ async function getRoutesRange(client, latitude, longitude, distance, last_update
     );
 }
 
-module.exports = {createFlyerRoute, getRoutesRange}
+async function getAllRoutes(client, callback) {
+    const request = "SELECT id, st_asgeojson(CAST(points as GEOMETRY)) as points, last_update, template, account FROM flyer_route;"
+    await client.query(request,
+        [],
+        callback,
+    );
+}
+
+module.exports = {createFlyerRoute, getRoutesRange, getAllRoutes}
