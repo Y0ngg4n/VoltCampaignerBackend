@@ -6,6 +6,7 @@ const auth = require('../middleware/auth')
 
 router.get('/:posterRoute', auth, async (req, res) => {
     try {
+
         let tableName;
         switch (req.params.posterRoute) {
             case 'campaign':
@@ -29,7 +30,9 @@ router.get('/:posterRoute', auth, async (req, res) => {
         if (!tableName) {
             return res.status(401).send({error: "Not a valid route"});
         }
-        await poster_tags_db.getTags(await db.getConnection(), tableName, (err, result) => {
+        const client = await db.getConnection();
+        await poster_tags_db.getTags(client, tableName, (err, result) => {
+            db.disconnect(client)
             if (err) {
                 return res.status(401).send({error: err.message});
             } else {

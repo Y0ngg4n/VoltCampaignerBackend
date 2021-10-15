@@ -32,7 +32,7 @@ router.post('/validate', auth, async (req, res) => {
 });
 
 function generateAccessToken(username) {
-    return jwt.sign(username, process.env.TOKEN_SECRET, {expiresIn: '24h'});
+    return jwt.sign(username, process.env.TOKEN_SECRET, {expiresIn: '14d'});
 }
 
 module.exports = router;
