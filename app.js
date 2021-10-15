@@ -57,6 +57,7 @@ app.use(function(err, req, res, next) {
 var maxRetryCount = 15;
 
 async function connect(){
+    console.log("Trying to connect to db...")
     const client = await db.getConnection().catch((err) => console.log(err.stack))
     await db.retryTxn(0, maxRetryCount, client, db.initTable, (response) => {
         console.log("Created Table: " + response)
