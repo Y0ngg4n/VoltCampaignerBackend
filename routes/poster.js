@@ -8,7 +8,9 @@ router.post('/create', auth, async (req, res) => {
     try {
         const {latitude, longitude, campaign, poster_type, motive, target_groups, environment, other} = req.body;
         const poster = {latitude, longitude, campaign, poster_type, motive, target_groups, environment, other};
-        await poster_db.createPoster(await db.getConnection(), poster, (err, result) => {
+        const client = await db.getConnection();
+        await poster_db.createPoster(client, poster, (err, result) => {
+            db.disconnect(client);
             if (err) {
                 return res.status(401).send({error: err.message});
             } else {
@@ -25,7 +27,9 @@ router.post('/update', auth, async (req, res) => {
     try {
         const {id, hanging, latitude, longitude, campaign, poster_type, motive, target_groups, environment, other} = req.body;
         const poster = {id, hanging, latitude, longitude, campaign, poster_type, motive, target_groups, environment, other};
-        await poster_db.updatePoster(await db.getConnection(), poster, (err, result) => {
+        const client = await db.getConnection();
+        await poster_db.updatePoster(client, poster, (err, result) => {
+            db.disconnect(client);
             if (err) {
                 return res.status(401).send({error: err.message});
             } else {
@@ -41,7 +45,9 @@ router.post('/update', auth, async (req, res) => {
 router.get('/distance', auth, async (req, res) => {
     try {
         const {latitude, longitude, distance, hanging, last_update} = req.headers;
-        await poster_db.getPosterInMeterRange(await db.getConnection(), latitude, longitude, distance, hanging, last_update, (err, result) => {
+        const client = await db.getConnection();
+        await poster_db.getPosterInMeterRange(client, latitude, longitude, distance, hanging, last_update, (err, result) => {
+            db.disconnect(client);
             if (err) {
                 return res.status(401).send({error: err.message});
             } else {
@@ -57,7 +63,9 @@ router.get('/distance', auth, async (req, res) => {
 router.get('/all', auth, async (req, res) => {
     try {
         const {hanging} = req.headers;
-        await poster_db.getAll(await db.getConnection(), hanging, (err, result) => {
+        const client = await db.getConnection();
+        await poster_db.getAll(client, hanging, (err, result) => {
+            db.disconnect(client)
             if (err) {
                 return res.status(401).send({error: err.message});
             } else {

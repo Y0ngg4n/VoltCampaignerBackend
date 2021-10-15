@@ -7,7 +7,9 @@ const auth = require('../middleware/auth')
 router.post('/route/upsert', auth, async (req, res) => {
     try {
         const {id, polyline} = req.body;
-        await flyer_db.createFlyerRoute(await db.getConnection(), id, polyline, (err, result) => {
+        const client = await db.getConnection();
+        await flyer_db.createFlyerRoute(client, id, polyline, (err, result) => {
+            db.disconnect(client);
             if (err) {
                 return res.status(401).send({error: err.message});
             } else {
@@ -23,7 +25,9 @@ router.post('/route/upsert', auth, async (req, res) => {
 router.get('/route/distance', auth, async (req, res) => {
     try {
         const {latitude, longitude, distance, last_update} = req.headers;
-        await flyer_db.getRoutesRange(await db.getConnection(), latitude, longitude, distance, last_update, (err, result) => {
+        const client = await db.getConnection();
+        await flyer_db.getRoutesRange(client, latitude, longitude, distance, last_update, (err, result) => {
+            db.disconnect(client);
             if (err) {
                 return res.status(401).send({error: err.message});
             } else {
@@ -38,7 +42,9 @@ router.get('/route/distance', auth, async (req, res) => {
 
 router.get('/route/all', auth, async (req, res) => {
     try {
-        await flyer_db.getAllRoutes(await db.getConnection(),(err, result) => {
+        const client = await db.getConnection();
+        await flyer_db.getAllRoutes(client,(err, result) => {
+            db.disconnect(client);
             if (err) {
                 return res.status(401).send({error: err.message});
             } else {

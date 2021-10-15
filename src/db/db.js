@@ -9,14 +9,13 @@ var config = {
     password: process.env.DB_PASSWORD,
     ssl: {
         rejectUnauthorized: false,
-        ca: fs.readFileSync('/run/secrets/ca.crt').toString(),
-        key: fs.readFileSync('/run/secrets/node.key').toString(),
-        cert: fs.readFileSync('/run/secrets/node.crt').toString(),
+        ca: fs.readFileSync('/run/secrets/ca.key').toString(),
+        key: fs.readFileSync('run/secrets/client.volt_campaigner.key').toString(),
+        cert: fs.readFileSync('run/secrets/client.volt_campaigner.crt').toString(),
     }
 };
 
 const pool = new Pool(config);
-let client;
 
 // Wrapper for a transaction.  This automatically re-calls the operation with
 // the client as an argument as long as the database server asks for
@@ -95,13 +94,16 @@ async function initTable(client, callback) {
 
 async function getConnection() {
     // Connect to database
-    if (!client)
-        client = await pool.connect();
-    return client;
+    return await pool.connect();
+}
+
+async function disconnect(client){
+    client.release();
 }
 
 module.exports = {
     getConnection,
+    disconnect,
     retryTxn,
     initTable,
 }
