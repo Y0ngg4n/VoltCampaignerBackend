@@ -7,12 +7,12 @@ var config = {
     database: process.env.DB_DATABASE,
     port: process.env.DB_PORT,
     password: process.env.DB_PASSWORD,
-    ssl: {
-        rejectUnauthorized: false,
-        ca: fs.readFileSync('/run/secrets/ca.crt').toString(),
-        key: fs.readFileSync('run/secrets/client.volt_campaigner.key').toString(),
-        cert: fs.readFileSync('run/secrets/client.volt_campaigner.crt').toString(),
-    }
+    // ssl: {
+    //     rejectUnauthorized: false,
+    //     ca: fs.readFileSync('/run/secrets/ca.crt').toString(),
+    //     key: fs.readFileSync('run/secrets/client.volt_campaigner.key').toString(),
+    //     cert: fs.readFileSync('run/secrets/client.volt_campaigner.crt').toString(),
+    // }
 };
 
 const pool = new Pool(config);
@@ -49,31 +49,22 @@ async function retryTxn(n, max, client, operation, callback) {
 // This function is called within the first transaction. It inserts some initial values into the "accounts" table.
 async function initTable(client, callback) {
     console.log("Creating Tables ...")
+    const tags = ['poster_campaign', "poster_type", "poster_motive", "poster_target_groups", "poster_environment",
+        "poster_other"]
     // Poster
-    const createCampaignTable =
-        "CREATE TABLE IF NOT EXISTS poster_campaign (id UUID DEFAULT gen_random_uuid() PRIMARY KEY, description STRING, active BOOL DEFAULT true)";
-    const createTypeTable =
-        "CREATE TABLE IF NOT EXISTS poster_type (id UUID DEFAULT gen_random_uuid() PRIMARY KEY, description STRING, active BOOL DEFAULT true)";
-    const createMotiveTable =
-        "CREATE TABLE IF NOT EXISTS poster_motive (id UUID DEFAULT gen_random_uuid() PRIMARY KEY, description STRING, active BOOL DEFAULT true)";
-    const createTargetGroupsTable =
-        "CREATE TABLE IF NOT EXISTS poster_target_groups (id UUID DEFAULT gen_random_uuid() PRIMARY KEY, description STRING, active BOOL DEFAULT true)";
-    const createEnvironmentTable =
-        "CREATE TABLE IF NOT EXISTS poster_environment (id UUID DEFAULT gen_random_uuid() PRIMARY KEY, description STRING, active BOOL DEFAULT true)";
-    const createOtherTable =
-        "CREATE TABLE IF NOT EXISTS poster_other (id UUID DEFAULT gen_random_uuid() PRIMARY KEY, description STRING, active BOOL DEFAULT true)";
+    for (let i = 0; i < tags.length; i++) {
+        const createCampaignTable =
+            "CREATE TABLE IF NOT EXISTS " + tags[i] + " (id UUID DEFAULT gen_random_uuid() PRIMARY KEY, description_en STRING, " +
+            "description_de STRING, description_es STRING, description_pt STRING, description_fr STRING, description_it STRING, description_nl STRING, " +
+            "description_da STRING, description_dv STRING, description_sv STRING, description_nb STRING, description_fi STRING, description_mt STRING, " +
+            "description_ru STRING, description_tr STRING, description_ar STRING, active BOOL DEFAULT true, color STRING)";
+        await client.query(createCampaignTable, callback);
+    }
     const createPosterTable =
         "CREATE TABLE IF NOT EXISTS poster (id UUID DEFAULT gen_random_uuid() PRIMARY KEY, hanging INT DEFAULT 0, " +
         "location GEOGRAPHY, campaign UUID[] DEFAULT ARRAY[], poster_type UUID[] DEFAULT ARRAY[], motive UUID[] DEFAULT ARRAY[], target_groups UUID[] DEFAULT ARRAY[], " +
         "environment UUID[] DEFAULT ARRAY[], other UUID[] DEFAULT ARRAY[], last_update TIMESTAMP DEFAULT now(), account STRING);";
-
     const createPosterIndex = "CREATE INDEX IF NOT EXISTS poster_location ON poster using GIST(location);"
-    await client.query(createCampaignTable, callback);
-    await client.query(createTypeTable, callback);
-    await client.query(createMotiveTable, callback);
-    await client.query(createTargetGroupsTable, callback);
-    await client.query(createEnvironmentTable, callback);
-    await client.query(createOtherTable, callback);
     await client.query(createPosterTable, callback);
     await client.query(createPosterIndex, callback);
 
@@ -97,7 +88,7 @@ async function getConnection() {
     return await pool.connect();
 }
 
-async function disconnect(client){
+async function disconnect(client) {
     client.release();
 }
 
