@@ -101,6 +101,9 @@ router.get('/contains-limits', auth, async (req, res) => {
                         }
                     })
                 }
+                if(result.rows.length <= 0){
+                    return res.status(200).send(areas);
+                }
             }
         })
     } catch (error) {
