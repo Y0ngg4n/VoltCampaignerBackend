@@ -102,6 +102,7 @@ router.get('/contains-limits', auth, async (req, res) => {
                     })
                 }
                 if(result.rows.length <= 0){
+                    db.disconnect(client);
                     return res.status(200).send(areas);
                 }
             }
