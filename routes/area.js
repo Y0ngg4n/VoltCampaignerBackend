@@ -82,15 +82,12 @@ router.get('/contains-limits', auth, async (req, res) => {
         const {latitude, longitude, last_update} = req.headers;
         const client = await db.getConnection();
         await area_db.getAreaContains(client, latitude, longitude, last_update, async (err, result) => {
-            await db.disconnect(client)
             if (err) {
                 return res.status(401).send({error: err.message});
             } else {
                 let areas = []
                 for (let i = 0; i < result.rows.length; i++) {
-                    const client = await db.getConnection();
                     await area_db.getAreaContainsLimits(client, result.rows[i], last_update, (err2, result2) => {
-                        db.disconnect(client)
                         let merged = {
                             hanging: result2.rows.length,
                             id: result.rows[i].id,
@@ -99,6 +96,7 @@ router.get('/contains-limits', auth, async (req, res) => {
                         };
                         areas.push(merged);
                         if (i === result.rows.length - 1) {
+                            db.disconnect(client)
                             return res.status(200).send(areas);
                         }
                     })
