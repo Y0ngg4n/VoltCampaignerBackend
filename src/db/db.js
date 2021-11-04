@@ -85,7 +85,15 @@ async function initTable(client, callback) {
 
 async function getConnection() {
     // Connect to database
-    return await pool.connect();
+    let connection;
+    let n = 0;
+    do{
+        connection = await pool.connect();
+        if(connection instanceof Error)
+            await new Promise((r) => setTimeout(r, 2 ** n * 1000));
+        n++;
+    }while((connection instanceof Error || !connection) && n < 20)
+    return connection;
 }
 
 async function disconnect(client) {

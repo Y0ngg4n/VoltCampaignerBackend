@@ -54,7 +54,7 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-var maxRetryCount = 15;
+const maxRetryCount = 15;
 
 async function connect(){
     console.log("Trying to connect to db...")
