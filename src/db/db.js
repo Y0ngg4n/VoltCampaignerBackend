@@ -88,7 +88,7 @@ async function getConnection() {
     let connection;
     let n = 0;
     do{
-        connection= await pool.connect();
+        connection = await pool.connect();
         if(connection instanceof Error)
             await new Promise((r) => setTimeout(r, 2 ** n * 1000));
         n++;
