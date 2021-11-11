@@ -7,12 +7,12 @@ var config = {
     database: process.env.DB_DATABASE,
     port: process.env.DB_PORT,
     password: process.env.DB_PASSWORD,
-    ssl: {
-        rejectUnauthorized: false,
-        ca: fs.readFileSync('/run/secrets/ca.crt').toString(),
-        key: fs.readFileSync('run/secrets/client.volt_campaigner.key').toString(),
-        cert: fs.readFileSync('run/secrets/client.volt_campaigner.crt').toString(),
-    }
+    // ssl: {
+    //     rejectUnauthorized: false,
+    //     ca: fs.readFileSync('/run/secrets/ca.crt').toString(),
+    //     key: fs.readFileSync('run/secrets/client.volt_campaigner.key').toString(),
+    //     cert: fs.readFileSync('run/secrets/client.volt_campaigner.crt').toString(),
+    // }
 };
 
 const pool = new Pool(config);
@@ -67,6 +67,13 @@ async function initTable(client, callback) {
     const createPosterIndex = "CREATE INDEX IF NOT EXISTS poster_location ON poster using GIST(location);"
     await client.query(createPosterTable, callback);
     await client.query(createPosterIndex, callback);
+
+    const createPlacemarkTable =
+        "CREATE TABLE IF NOT EXISTS placemark (id UUID DEFAULT gen_random_uuid() PRIMARY KEY, type INT DEFAULT 0, " +
+        "location GEOGRAPHY, title STRING, description STRING, last_update TIMESTAMP DEFAULT now(), account STRING);";
+    const createPlacemarkIndex = "CREATE INDEX IF NOT EXISTS placemark_location ON placemark using GIST(location);"
+    await client.query(createPlacemarkTable, callback);
+    await client.query(createPlacemarkIndex, callback);
 
     const createFlyerRouteTable =
         "CREATE TABLE IF NOT EXISTS flyer_route (id UUID DEFAULT gen_random_uuid() PRIMARY KEY, points GEOGRAPHY, " +

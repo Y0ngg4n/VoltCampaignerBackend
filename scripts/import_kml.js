@@ -50,8 +50,8 @@ fs.readFile(args[0], 'utf-8', async function (err, data) {
             }
             const point = xmlQuery(node).find('Point').text();
             const poster = {
-                latitude: point.split(",")[0],
-                longitude: point.split(",")[1],
+                latitude: point.split(",")[1],
+                longitude: point.split(",")[0],
                 campaign: campaign === 'undefined' || campaign === '' ? [] : [campaign],
                 poster_type: type === 'undefined' || type === '' ? [] : [type],
                 motive: motive === 'undefined' || motive === '' ? [] : [motive],
