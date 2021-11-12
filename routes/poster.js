@@ -72,7 +72,7 @@ router.get('/distance', auth, async (req, res) => {
         console.log("Longitude: "+ longitude)
         console.log("distance: "+ distance)
         console.log("hanging: "+ hanging)
-        console.log("last_update: "+ last_update2)
+        console.log("last_update: "+ last_update2)  
         const client = await db.getConnection();
         await poster_db.getPosterInMeterRange(client, latitude, longitude, distance, hanging, last_update2, (err, result) => {
             db.disconnect(client);
