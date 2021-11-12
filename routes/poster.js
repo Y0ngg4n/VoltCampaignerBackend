@@ -66,15 +66,15 @@ router.post('/update', auth, async (req, res) => {
 
 router.get('/distance', auth, async (req, res) => {
     try {
-        const {latitude, longitude, distance, hanging, last_update} = req.headers;
+        const {latitude, longitude, distance, hanging, last_update2} = req.headers;
         console.log("Get Poster for:")
         console.log("Latitude: "+ latitude)
         console.log("Longitude: "+ longitude)
         console.log("distance: "+ distance)
         console.log("hanging: "+ hanging)
-        console.log("last_update: "+ last_update)
+        console.log("last_update: "+ last_update2)
         const client = await db.getConnection();
-        await poster_db.getPosterInMeterRange(client, latitude, longitude, distance, hanging, last_update, (err, result) => {
+        await poster_db.getPosterInMeterRange(client, latitude, longitude, distance, hanging, last_update2, (err, result) => {
             db.disconnect(client);
             console.log(result);
             if (err) {
