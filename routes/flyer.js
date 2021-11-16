@@ -24,9 +24,9 @@ router.post('/route/upsert', auth, async (req, res) => {
 
 router.get('/route/distance', auth, async (req, res) => {
     try {
-        const {latitude, longitude, distance, last_update} = req.headers;
+        const {latitude, longitude, distance, lastUpdate} = req.headers;
         const client = await db.getConnection();
-        await flyer_db.getRoutesRange(client, latitude, longitude, distance, last_update, (err, result) => {
+        await flyer_db.getRoutesRange(client, latitude, longitude, distance, lastUpdate, (err, result) => {
             db.disconnect(client);
             if (err) {
                 return res.status(401).send({error: err.message});

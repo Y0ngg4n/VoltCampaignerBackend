@@ -6,8 +6,8 @@ const auth = require('../middleware/auth')
 
 router.post('/create', auth, async (req, res) => {
     try {
-        const {latitude, longitude, campaign, poster_type, motive, target_groups, environment, other} = req.body;
-        const poster = {latitude, longitude, campaign, poster_type, motive, target_groups, environment, other};
+        const {latitude, longitude, campaign, posterType, motive, targetGroups, environment, other} = req.body;
+        const poster = {latitude, longitude, campaign, posterType, motive, targetGroups, environment, other};
         const client = await db.getConnection();
         await poster_db.createPoster(client, poster, (err, result) => {
             db.disconnect(client);
@@ -31,9 +31,9 @@ router.post('/update', auth, async (req, res) => {
             latitude,
             longitude,
             campaign,
-            poster_type,
+            posterType,
             motive,
-            target_groups,
+            targetGroups,
             environment,
             other
         } = req.body;
@@ -43,9 +43,9 @@ router.post('/update', auth, async (req, res) => {
             latitude,
             longitude,
             campaign,
-            poster_type,
+            posterType,
             motive,
-            target_groups,
+            targetGroups,
             environment,
             other
         };
@@ -66,16 +66,9 @@ router.post('/update', auth, async (req, res) => {
 
 router.get('/distance', auth, async (req, res) => {
     try {
-        const {latitude, longitude, distance, hanging, last_update} = req.headers;
-        console.log("Get Poster for:")
-        console.log("Latitude: "+ latitude)
-        console.log("Longitude: "+ longitude)
-        console.log("distance: "+ distance)
-        console.log("hanging: "+ hanging)
-        console.log("last_update: "+ last_update)
-        console.log(req.headers);
+        const {latitude, longitude, distance, hanging, lastUpdate} = req.headers;
         const client = await db.getConnection();
-        await poster_db.getPosterInMeterRange(client, latitude, longitude, distance, hanging, last_update, (err, result) => {
+        await poster_db.getPosterInMeterRange(client, latitude, longitude, distance, hanging, lastUpdate, (err, result) => {
             db.disconnect(client);
             if (err) {
                 return res.status(401).send({error: err.message});

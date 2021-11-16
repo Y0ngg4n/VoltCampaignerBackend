@@ -6,8 +6,8 @@ const auth = require("../middleware/auth");
 
 router.post('/create', auth, async (req, res) => {
     try {
-        const {id, name, points, max_poster} = req.body;
-        const area = {id, name, points, max_poster};
+        const {id, name, points, maxPoster} = req.body;
+        const area = {id, name, points, maxPoster};
         const client = await db.getConnection();
         await area_db.createArea(client, area, (err, result) => {
             db.disconnect(client)
@@ -25,9 +25,9 @@ router.post('/create', auth, async (req, res) => {
 
 router.get('/distance', auth, async (req, res) => {
     try {
-        const {latitude, longitude, distance, last_update} = req.headers;
+        const {latitude, longitude, distance, lastUpdate} = req.headers;
         const client = await db.getConnection();
-        await area_db.getAreasRange(client, latitude, longitude, distance, last_update, (err, result) => {
+        await area_db.getAreasRange(client, latitude, longitude, distance, lastUpdate, (err, result) => {
             db.disconnect(client)
             if (err) {
                 return res.status(401).send({error: err.message});
@@ -61,9 +61,9 @@ router.get('/all', auth, async (req, res) => {
 
 router.get('/contains', auth, async (req, res) => {
     try {
-        const {latitude, longitude, last_update} = req.headers;
+        const {latitude, longitude, lastUpdate} = req.headers;
         const client = await db.getConnection();
-        await area_db.getAreaContains(client, latitude, longitude, last_update, (err, result) => {
+        await area_db.getAreaContains(client, latitude, longitude, lastUpdate, (err, result) => {
             db.disconnect(client)
             if (err) {
                 return res.status(401).send({error: err.message});
@@ -79,15 +79,15 @@ router.get('/contains', auth, async (req, res) => {
 
 router.get('/contains-limits', auth, async (req, res) => {
     try {
-        const {latitude, longitude, last_update} = req.headers;
+        const {latitude, longitude, lastUpdate} = req.headers;
         const client = await db.getConnection();
-        await area_db.getAreaContains(client, latitude, longitude, last_update, async (err, result) => {
+        await area_db.getAreaContains(client, latitude, longitude, lastUpdate, async (err, result) => {
             if (err) {
                 return res.status(401).send({error: err.message});
             } else {
                 let areas = []
                 for (let i = 0; i < result.rows.length; i++) {
-                    await area_db.getAreaContainsLimits(client, result.rows[i], last_update, (err2, result2) => {
+                    await area_db.getAreaContainsLimits(client, result.rows[i], lastUpdate, (err2, result2) => {
                         let merged = {
                             hanging: result2.rows.length,
                             id: result.rows[i].id,
