@@ -26,6 +26,7 @@ router.post('/create', auth, async (req, res) => {
 router.get('/distance', auth, async (req, res) => {
     try {
         const {latitude, longitude, distance, lastUpdate} = req.headers;
+        console.log("LastUpdate: " + lastUpdate);
         const client = await db.getConnection();
         await area_db.getAreasRange(client, latitude, longitude, distance, lastUpdate, (err, result) => {
             db.disconnect(client)
