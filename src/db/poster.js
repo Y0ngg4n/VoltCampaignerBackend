@@ -9,9 +9,9 @@ async function createPoster(client, poster, callback) {
             poster.longitude,
             poster.latitude,
             poster.campaign,
-            poster.poster_type,
+            poster.postertype,
             poster.motive,
-            poster.target_groups,
+            poster.targetgroups,
             poster.environment,
             poster.other
         ],
@@ -31,9 +31,9 @@ async function updatePoster(client, poster, callback) {
             poster.longitude,
             poster.latitude,
             poster.campaign,
-            poster.poster_type,
+            poster.postertype,
             poster.motive,
-            poster.target_groups,
+            poster.targetgroups,
             poster.environment,
             poster.other,
             poster.id

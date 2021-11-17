@@ -6,8 +6,8 @@ const auth = require('../middleware/auth')
 
 router.post('/create', auth, async (req, res) => {
     try {
-        const {latitude, longitude, campaign, posterType, motive, targetGroups, environment, other} = req.body;
-        const poster = {latitude, longitude, campaign, posterType, motive, targetGroups, environment, other};
+        const {latitude, longitude, campaign, postertype, motive, targetgroups, environment, other} = req.body;
+        const poster = {latitude, longitude, campaign, postertype, motive, targetgroups, environment, other};
         const client = await db.getConnection();
         await poster_db.createPoster(client, poster, (err, result) => {
             db.disconnect(client);
@@ -31,9 +31,9 @@ router.post('/update', auth, async (req, res) => {
             latitude,
             longitude,
             campaign,
-            posterType,
+            postertype,
             motive,
-            targetGroups,
+            targetgroups,
             environment,
             other
         } = req.body;
@@ -43,9 +43,9 @@ router.post('/update', auth, async (req, res) => {
             latitude,
             longitude,
             campaign,
-            posterType,
+            postertype,
             motive,
-            targetGroups,
+            targetgroups,
             environment,
             other
         };
@@ -66,9 +66,9 @@ router.post('/update', auth, async (req, res) => {
 
 router.get('/distance', auth, async (req, res) => {
     try {
-        const {latitude, longitude, distance, hanging, lastUpdate} = req.headers;
+        const {latitude, longitude, distance, hanging, lastupdate} = req.headers;
         const client = await db.getConnection();
-        await poster_db.getPosterInMeterRange(client, latitude, longitude, distance, hanging, lastUpdate, (err, result) => {
+        await poster_db.getPosterInMeterRange(client, latitude, longitude, distance, hanging, lastupdate, (err, result) => {
             db.disconnect(client);
             if (err) {
                 return res.status(401).send({error: err.message});
@@ -94,15 +94,6 @@ router.get('/all', auth, async (req, res) => {
                 return res.status(200).send(result.rows);
             }
         })
-    } catch (error) {
-        console.log(error);
-        return res.status(400).send(error);
-    }
-});
-
-router.post('/import', auth, async (req, res) => {
-    try {
-
     } catch (error) {
         console.log(error);
         return res.status(400).send(error);
