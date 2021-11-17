@@ -25,9 +25,9 @@ router.post('/create', auth, async (req, res) => {
 
 router.get('/distance', auth, async (req, res) => {
     try {
-        const {latitude, longitude, distance, lastUpdate} = req.headers;
+        const {latitude, longitude, distance, lastupdate} = req.headers;
         const client = await db.getConnection();
-        await area_db.getAreasRange(client, latitude, longitude, distance, lastUpdate, (err, result) => {
+        await area_db.getAreasRange(client, latitude, longitude, distance, lastupdate, (err, result) => {
             db.disconnect(client)
             if (err) {
                 return res.status(401).send({error: err.message});
@@ -61,9 +61,9 @@ router.get('/all', auth, async (req, res) => {
 
 router.get('/contains', auth, async (req, res) => {
     try {
-        const {latitude, longitude, lastUpdate} = req.headers;
+        const {latitude, longitude, lastupdate} = req.headers;
         const client = await db.getConnection();
-        await area_db.getAreaContains(client, latitude, longitude, lastUpdate, (err, result) => {
+        await area_db.getAreaContains(client, latitude, longitude, lastupdate, (err, result) => {
             db.disconnect(client)
             if (err) {
                 return res.status(401).send({error: err.message});
@@ -79,15 +79,15 @@ router.get('/contains', auth, async (req, res) => {
 
 router.get('/contains-limits', auth, async (req, res) => {
     try {
-        const {latitude, longitude, lastUpdate} = req.headers;
+        const {latitude, longitude, lastupdate} = req.headers;
         const client = await db.getConnection();
-        await area_db.getAreaContains(client, latitude, longitude, lastUpdate, async (err, result) => {
+        await area_db.getAreaContains(client, latitude, longitude, lastupdate, async (err, result) => {
             if (err) {
                 return res.status(401).send({error: err.message});
             } else {
                 let areas = []
                 for (let i = 0; i < result.rows.length; i++) {
-                    await area_db.getAreaContainsLimits(client, result.rows[i], lastUpdate, (err2, result2) => {
+                    await area_db.getAreaContainsLimits(client, result.rows[i], lastupdate, (err2, result2) => {
                         let merged = {
                             hanging: result2.rows.length,
                             id: result.rows[i].id,
