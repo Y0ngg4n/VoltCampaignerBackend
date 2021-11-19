@@ -40,7 +40,7 @@ services:
       - source: user_cockroachdb_client_db-crt
         target: client.user.crt
       - source: user_cockroachdb_client_db-key
-        target: client.volt_campaigner.key
+        target: client.db.key
         mode: 0600
         
         ...
