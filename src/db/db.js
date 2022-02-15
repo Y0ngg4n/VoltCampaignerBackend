@@ -1,5 +1,6 @@
 const {Pool} = require("pg");
 const fs = require('fs')
+var path = require('path');
 
 var config = {
     user: process.env.DB_USERNAME,
@@ -9,9 +10,9 @@ var config = {
     password: process.env.DB_PASSWORD,
     ssl: {
         rejectUnauthorized: false,
-        ca: fs.readFileSync('/run/secrets/ca.crt').toString(),
-        key: fs.readFileSync('run/secrets/client.volt_campaigner.key').toString(),
-        cert: fs.readFileSync('run/secrets/client.volt_campaigner.crt').toString(),
+        ca: fs.readFileSync(path.join(process.env.CERT_DIR ,'ca.crt')).toString(),
+        key: fs.readFileSync(path.join(process.env.CERT_DIR, 'client.volt_campaigner.key')).toString(),
+        cert: fs.readFileSync(path.join(process.env.CERT_DIR, 'client.volt_campaigner.crt')).toString(),
     }
 };
 

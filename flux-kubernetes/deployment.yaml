@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: volt-rest-api
+  namespace: volt
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: volt-rest-api
+  template:
+    metadata:
+      labels:
+        app: volt-rest-api
+    spec:
+      containers:
+        - image: yonggan/volt_campaigner_backend
+          imagePullPolicy: IfNotPresent
+          name: volt-rest-api
+          env:
+            - name: TOKEN_SECRET
+              value: "SUPER SECRET TOKEN"
+            - name: DB_HOST
+              value: volt-db.oblivioncoding.pro
+            - name: DB_DATABASE
+              value: volt_campaigner
+            - name: DB_USERNAME
+              value: volt_campaigner
+            - name: DB_PASSWORD
+              value: SUPER_SECRET_PASSWORD
+            - name: DB_PORT
+              value: "26250"
+            - name: CERT_DIR
+              value: "/mnt/secrets"
+          ports:
+            - containerPort: 3000
+              protocol: TCP
+          volumeMounts:
+            - name: tls-key
+              mountPath: "/mnt/secrets"
+              readOnly: false
+      volumes:
+        - name: tls-key
+          projected:
+            sources:
+              - secret:
+                  name: cockroachdb.client.volt-campaigner
+                  items:
+                    - key: tls.key
+                      path: client.volt_campaigner.key
+                    - key: tls.crt
+                      path: client.volt_campaigner.crt
+                    - key: ca.crt
+                      path: ca.crt
+      restartPolicy: Always
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: volt-web
+  namespace: volt
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: volt-web
+  template:
+    metadata:
+      labels:
+        app: volt-web
+    spec:
+      containers:
+        - image: yonggan/volt_campaigner-web
+          imagePullPolicy: IfNotPresent
+          name: volt-web
+          ports:
+            - containerPort: 80
+              protocol: TCP
+      restartPolicy: Always

@@ -1,0 +1,37 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: volt-rest-api
+  namespace: volt
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    traefik.frontend.passHostHeader: "false"
+spec:
+  ingressClassName: traefik
+  tls:
+    - hosts:
+        - volt-rest-api.oblivioncoding.pro
+        - volt.oblivioncoding.pro
+      secretName: volt-tls
+  rules:
+    - host: volt-rest-api.oblivioncoding.pro
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: volt-rest-api
+                port:
+                  number: 3000
+    - host: volt.oblivioncoding.pro
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: volt-web
+                port:
+                  number: 80
+
