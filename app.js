@@ -32,6 +32,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
+app.use('/health', require('./routes/health'));
 app.use('/poster', require('./routes/poster'));
 app.use('/placemark', require('./routes/placemark'));
 app.use('/poster-tags', require('./routes/poster_tags'));
